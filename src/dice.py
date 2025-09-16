@@ -6,7 +6,7 @@ SIDES = 20
 COUNTS = {i: 0 for i in range(1, SIDES+1)}
 
 def roll_dice(s=6):
-    epoch_time = time.time()
+    epoch_time = int(time.time() * 1000)
     random.seed(epoch_time)
     return random.randint(1, s)
 

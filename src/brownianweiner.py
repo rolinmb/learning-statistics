@@ -1,3 +1,4 @@
+import time
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -7,6 +8,9 @@ dt = T / N    # time step
 mu = 0        # drift
 sigma = 1     # volatility
 window_sizes = [3,11,17,23,31,47,61]  # moving average windows
+
+epochtime = int(time.time())
+np.random.seed(epochtime)
 
 if __name__ == "__main__":
     t = np.linspace(0, T, N+1)
@@ -20,7 +24,7 @@ if __name__ == "__main__":
 
     fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(12, 10), sharex=True)
 
-    # Panel 1
+    # Panel 1: Brownian motion + moving averages
     ax1.plot(t, W, label="Brownian Motion", alpha=0.7)
     for window in window_sizes:
         ma = np.convolve(W, np.ones(window)/window, mode='valid')
@@ -30,11 +34,14 @@ if __name__ == "__main__":
     ax1.grid(True)
     ax1.legend()
 
-    # Panel 2
-    ax2.plot(t_mid, dW_dt, color='orange', label="dW/dt (Euler approx)")
+    # Panel 2: Derivative + moving averages
+    ax2.plot(t_mid, dW_dt, color='orange', alpha=0.7, label="dW/dt (Euler approx)")
+    for window in window_sizes:
+        ma_deriv = np.convolve(dW_dt, np.ones(window)/window, mode='valid')
+        ax2.plot(t_mid[window-1:], ma_deriv, label=f"Derivative MA {window} steps")
     ax2.set_xlabel("Time")
     ax2.set_ylabel("dW/dt")
-    ax2.set_title("Approximate Derivative of Brownian Motion")
+    ax2.set_title("Approximate Derivative of Brownian Motion with Moving Averages")
     ax2.grid(True)
     ax2.legend()
 
