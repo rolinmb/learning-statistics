@@ -2,12 +2,11 @@ import time
 import numpy as np
 import matplotlib.pyplot as plt
 
-
-alpha = 0.8  # amplitude
+alpha = 0.777
 p0 = alpha**2
 p1 = 1 - p0
-t = int(time.time())
-np.random.seed(t)
+epochtime = int(time.time())
+np.random.seed(epochtime)
 
 if __name__ == "__main__":
     samples = np.random.choice([0,1], size=1000, p=[p0,p1])
