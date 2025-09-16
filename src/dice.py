@@ -1,14 +1,14 @@
 import random
 import time
 
-def roll_dice(SIDES=6):
+NROLLS = 100
+SIDES = 20
+COUNTS = {i: 0 for i in range(1, SIDES+1)}
+
+def roll_dice(s=6):
     epoch_time = time.time()
     random.seed(epoch_time)
-    return random.randint(1, SIDES)
-
-NROLLS = 10
-SIDES = 6
-COUNTS = {i: 0 for i in range(1, SIDES+1)}
+    return random.randint(1, s)
 
 if __name__ == "__main__":
     print(f"\nRolling a {SIDES}-sided dice {NROLLS} times")
