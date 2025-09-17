@@ -7,7 +7,7 @@ N = 10000     # number of steps
 dt = T / N    # time step
 mu = 0        # drift
 sigma = 1     # volatility
-window_sizes = [3,11,17,23,31,47,61]  # moving average windows
+window_sizes = [3,11,17,31,61]  # moving average windows
 
 epochtime = int(time.time())
 np.random.seed(epochtime)
@@ -34,14 +34,29 @@ if __name__ == "__main__":
     ax1.grid(True)
     ax1.legend()
 
-    # Panel 2: Derivative + moving averages
-    ax2.plot(t_mid, dW_dt, color='orange', alpha=0.7, label="dW/dt (Euler approx)")
+    # Panel 2: Derivative + moving averages + ±1 std bands
+    ax2.plot(t_mid, dW_dt, color='orange', alpha=0.6, label="dW/dt (Euler approx)")
+
     for window in window_sizes:
+        # Moving average of derivative
         ma_deriv = np.convolve(dW_dt, np.ones(window)/window, mode='valid')
-        ax2.plot(t_mid[window-1:], ma_deriv, label=f"Derivative MA {window} steps")
+        t_ma = t_mid[window-1:]
+
+        # Rolling std deviation for same window
+        rolling_std = np.array([
+            np.std(dW_dt[i-window+1:i+1]) for i in range(window-1, len(dW_dt))
+        ])
+
+        # Plot mean
+        ax2.plot(t_ma, ma_deriv, label=f"Derivative MA {window} steps")
+
+        # Plot ±1 std deviation band
+        ax2.fill_between(t_ma, ma_deriv - rolling_std, ma_deriv + rolling_std,
+            alpha=0.2, linewidth=0, label=f"±1σ (window {window})")
+
     ax2.set_xlabel("Time")
     ax2.set_ylabel("dW/dt")
-    ax2.set_title("Approximate Derivative of Brownian Motion with Moving Averages")
+    ax2.set_title("Approximate Derivative of Brownian Motion with Moving Averages and Volatility Bands")
     ax2.grid(True)
     ax2.legend()
 
